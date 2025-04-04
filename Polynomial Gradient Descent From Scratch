@@ -1,1 +1,45 @@
+import numpy as np
 
+def gradient_descent(X, y, theta_weight, alpha=1e-3, epochs=200, tol=1e-7):
+    m = len(X)
+    loss_over_epochs = []
+    residual_loss = float('inf')
+
+    # Training Loop
+    for epoch in range(epochs):
+        gradients = (1/m) * X.T @ (X @ theta_weight - y) # Gradient Computation
+        theta_weight -= alpha * gradients # Gradient Descent Update Rule
+        cost_func = (1/(2*m)) * np.sum((X @ theta_weight - y) ** 2) # Mean Squared Error Loss Function
+        loss_over_epochs.append(cost_func) # Plotting for Visualization
+
+        print(f"Epochs: {epoch+1}/{epochs}, Loss: {cost_func:.4f}")
+
+        # Early Stopping
+        if abs(residual_loss - cost_func) < tol: # Tolerance level
+            print(f"Model converged at epoch {epoch+1} with a loss of {abs(residual_loss - cost_func):.4f}")
+            break
+
+        residual_loss = cost_func # Update residual loss for next epoch check
+
+    return theta_weight, loss_over_epochs
+
+m = 100  # Number of Examples
+degree = 3  # Cubic Function
+
+# Generate random X values
+X_original = np.random.randn(m, 1)
+
+# Create polynomial features
+X_poly = np.zeros((m, degree + 1))
+for i in range(degree + 1):
+    X_poly[:, i] = X_original[:, 0] ** i
+
+# Cubic function with noise
+y = 3 + 5 * X_original + 2 * X_original**2 - X_original**3 + np.random.randn(m, 1)
+
+# Initialize parameters based X shape
+theta_weight = np.random.randn(degree + 2, 1)
+
+optimized_theta_weight, losses = gradient_descent(X, y, theta_weight, alpha=1e-3, epochs=200, tol=1e-7)
+
+print(f"Optimized Weight (θ): {optimized_theta_weight[-1]}")
