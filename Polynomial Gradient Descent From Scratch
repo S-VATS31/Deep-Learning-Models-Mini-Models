@@ -7,39 +7,39 @@ def gradient_descent(X, y, theta_weight, alpha=1e-3, epochs=200, tol=1e-7):
 
     # Training Loop
     for epoch in range(epochs):
-        gradients = (1/m) * X.T @ (X @ theta_weight - y) # Gradient Computation
-        theta_weight -= alpha * gradients # Gradient Descent Update Rule
-        cost_func = (1/(2*m)) * np.sum((X @ theta_weight - y) ** 2) # Mean Squared Error Loss Function
-        loss_over_epochs.append(cost_func) # Plotting for Visualization
+        gradients = (1/m) * X.T @ (X @ theta_weight - y)  # Gradient Computation
+        theta_weight -= alpha * gradients  # Gradient Descent Update Rule
+        cost_func = (1/(2*m)) * np.sum((X @ theta_weight - y) ** 2)  # Mean Squared Error Loss Function
+        loss_over_epochs.append(cost_func)  # Store loss for visualization
 
-        print(f"Epochs: {epoch+1}/{epochs}, Loss: {cost_func:.4f}")
+        print(f"Epoch {epoch+1}/{epochs}, Loss: {cost_func:.6f}")
 
         # Early Stopping
-        if abs(residual_loss - cost_func) < tol: # Tolerance level
-            print(f"Model converged at epoch {epoch+1} with a loss of {abs(residual_loss - cost_func):.4f}")
+        if abs(residual_loss - cost_func) < tol:  # Tolerance level
+            print(f"Model converged at epoch {epoch+1} with a loss change of {abs(residual_loss - cost_func):.6f}")
             break
 
-        residual_loss = cost_func # Update residual loss for next epoch check
+        residual_loss = cost_func  # Update residual loss for next epoch check
 
     return theta_weight, loss_over_epochs
 
-m = 100  # Number of Examples
-degree = 3  # Cubic Function
+m = 100  # Number of examples
+degree = 3  # Cubic function
 
 # Generate random X values
 X_original = np.random.randn(m, 1)
 
-# Create polynomial features
-X_poly = np.zeros((m, degree + 1))
-for i in range(degree + 1):
-    X_poly[:, i] = X_original[:, 0] ** i
+# Create polynomial features including bias term
+X_poly = np.ones((m, degree + 1))  # First column is bias (ones)
+for i in range(1, degree + 1):
+    X_poly[:, i] = X_original[:, 0] ** i  # Polynomial features
 
 # Cubic function with noise
 y = 3 + 5 * X_original + 2 * X_original**2 - X_original**3 + np.random.randn(m, 1)
 
-# Initialize parameters based X shape
-theta_weight = np.random.randn(degree + 2, 1)
+# Initialize parameters based on X shape
+theta_weight = np.random.randn(degree + 1, 1)  # Matching correct dimensions
 
-optimized_theta_weight, losses = gradient_descent(X, y, theta_weight, alpha=1e-3, epochs=200, tol=1e-7)
+optimized_theta_weight, losses = gradient_descent(X_poly, y, theta_weight, alpha=1e-3, epochs=200, tol=1e-7)
 
-print(f"Optimized Weight (θ): {optimized_theta_weight[-1]}")
+print(f"Optimized Weights (θ): \n{optimized_theta_weight}")
