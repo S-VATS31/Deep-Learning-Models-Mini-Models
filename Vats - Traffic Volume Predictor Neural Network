@@ -161,13 +161,13 @@ def train_nn(neural_network, criterion, optimizer, testloader, trainloader, devi
             # Column vector
             y_train = y_train.view(-1, 1)
 
-            optimizer.zero_grad()  # Zero gradients to prevent accumulation
-            y_pred = neural_network(X_train)  # Forward pass
-            cost = criterion(y_pred, y_train)  # MSE cost function
-            cost.backward()  # Backpropagation
-            optimizer.step()  # Update parameters
+            optimizer.zero_grad() # Zero gradients to prevent accumulation
+            y_pred = neural_network(X_train) # Forward pass
+            cost = criterion(y_pred, y_train) # MSE cost function
+            cost.backward() # Backpropagation
+            optimizer.step() # Update parameters
 
-            total_train_loss += cost.item()  # Accumulate training loss
+            total_train_loss += cost.item() # Accumulate training loss
         
         # Apply learning rate scheduler
         scheduler.step()
@@ -189,10 +189,10 @@ def train_nn(neural_network, criterion, optimizer, testloader, trainloader, devi
                 # Column vector
                 y_test = y_test.view(-1, 1)
 
-                y_pred = neural_network(X_test)  # Forward pass
-                cost = criterion(y_pred, y_test)  # MSE cost function
+                y_pred = neural_network(X_test) # Forward pass
+                cost = criterion(y_pred, y_test) # MSE cost function
 
-                total_test_loss += cost.item()  # Accumulate test loss
+                total_test_loss += cost.item() # Accumulate test loss
 
         # Calculate average test loss for this epoch
         avg_test_loss = total_test_loss / len(testloader)
@@ -261,7 +261,7 @@ def eval_nn(neural_network, testloader, device):
         # Testing/Predictions Loop
         for X_test, y_test in testloader:
             X_test, y_test = X_test.to(device), y_test.to(device)
-            y_pred = neural_network(X_test)  # Forward Pass
+            y_pred = neural_network(X_test) # Forward Pass
 
             # Only squeeze if dimensions > 1
             if y_pred.dim() > 1 and y_pred.size(1) == 1:
